@@ -1,144 +1,579 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#087a43">
-<meta name="description" content="Private, offline personal expense tracker">
-<link rel="manifest" href="manifest.webmanifest">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#176b55">
 <title>My Expense Tracker</title>
+<link rel="manifest" href="manifest.webmanifest">
 <style>
-:root{--green:#087a43;--green2:#0c9b58;--ink:#173329;--muted:#718078;--bg:#f2f7f3;--line:#e4ece6;--red:#c74747;--amber:#b87512}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);padding-bottom:88px}
-header{background:linear-gradient(135deg,#066b3a,#0b9a57);color:white;padding:22px 18px 26px;border-radius:0 0 25px 25px}
-.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:19px;font-weight:800}.month{font-size:13px;opacity:.9;margin-top:6px}
-.wrap{max-width:650px;margin:auto}.content{padding:0 15px}.budget{background:white;border-radius:20px;padding:18px;margin-top:-13px;box-shadow:0 5px 20px #12351b12}
-.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.label{font-size:12px;color:var(--muted)}.big{font-size:30px;font-weight:850;letter-spacing:-1px;margin:4px 0}.green{color:var(--green)}.red{color:var(--red)}
-.progress{height:10px;border-radius:99px;background:#e9f0eb;overflow:hidden;margin:12px 0 14px}.bar{height:100%;width:0;background:var(--green2);border-radius:99px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#f7faf7;border-radius:13px;padding:12px}.stat strong{display:block;font-size:19px;margin-top:4px}
-.section{font-size:16px;font-weight:800;margin:22px 2px 10px}.card{background:white;border-radius:17px;padding:15px;margin-bottom:12px;box-shadow:0 2px 10px #12351b08}
-button,input,select{font:inherit}button{border:0;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer}.primary{background:var(--green);color:white}.secondary{background:#e9f5ed;color:var(--green)}.danger{background:#fff0f0;color:var(--red)}.small{padding:8px 10px;font-size:12px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions button{min-height:48px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:9px 4px calc(9px + env(safe-area-inset-bottom));z-index:5}
-nav button{background:transparent;color:#66766d;font-size:11px;padding:5px 8px;display:flex;flex-direction:column;align-items:center;gap:3px}nav button.active{color:var(--green)}nav b{font-size:19px}
-.view{display:none}.view.active{display:block}
-form{display:grid;gap:11px}label{font-size:12px;color:var(--muted);font-weight:650}input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:white;color:var(--ink);margin-top:5px}
-.listitem{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);gap:10px}.listitem:last-child{border:0}.desc{font-weight:700}.sub{font-size:11px;color:var(--muted);margin-top:3px}
-.pill{font-size:10px;background:#edf6ef;color:var(--green);padding:4px 8px;border-radius:20px}.empty{text-align:center;color:var(--muted);padding:25px 8px;font-size:13px}
-.note{font-size:11px;color:var(--muted);line-height:1.5}.hidden{display:none!important}.catrow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+:root {
+  --green:#176b55; --light:#eaf5f0; --red:#c0392b;
+  --bg:#f4f7f6; --card:#fff; --text:#20312b; --muted:#718078;
+  --border:#dce6e1;
+}
+* {box-sizing:border-box}
+body {
+  margin:0; font-family:Arial, sans-serif; background:var(--bg);
+  color:var(--text); padding:16px; max-width:760px; margin:auto;
+}
+header {padding:12px 0 18px}
+h1 {font-size:25px; margin:0 0 5px}
+h2 {font-size:18px; margin:0 0 14px}
+h3 {font-size:15px; margin:0 0 10px}
+p {margin:5px 0}
+.muted {color:var(--muted);font-size:13px}
+.card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:14px; padding:16px; margin-bottom:14px;
+}
+.grid {display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat {padding:13px;border-radius:10px;background:var(--light)}
+.stat small {display:block;color:var(--muted);margin-bottom:7px}
+.stat strong {font-size:21px}
+.green {color:var(--green)}
+.red {color:var(--red)}
+label {display:block;font-size:13px;font-weight:bold;margin:12px 0 6px}
+input,select,button {
+  font:inherit; width:100%; padding:12px; border-radius:9px;
+}
+input,select {border:1px solid var(--border);background:#fff;color:var(--text)}
+button {
+  border:0;background:var(--green);color:white;font-weight:bold;
+  cursor:pointer;margin-top:12px;
+}
+button.secondary {background:#e8efeb;color:var(--text)}
+button.danger {background:#fff0ee;color:var(--red)}
+button.small {width:auto;padding:7px 10px;margin:0;font-size:12px}
+.tabs {display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.tabs button {font-size:12px;padding:11px 4px;margin:0;background:#e4ece8;color:var(--text)}
+.tabs button.active {background:var(--green);color:white}
+.progress {height:11px;background:#e5ece8;border-radius:20px;overflow:hidden;margin-top:10px}
+.progress div {height:100%;background:var(--green);width:0%}
+.row {display:flex;justify-content:space-between;align-items:center;gap:10px}
+.transaction {padding:12px 0;border-bottom:1px solid var(--border)}
+.transaction:last-child {border-bottom:0}
+.transaction .amount {font-weight:bold;white-space:nowrap}
+.hidden {display:none}
+.actions {display:flex;gap:8px;flex-wrap:wrap}
+.actions button {flex:1;min-width:120px}
+footer {text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@media(max-width:420px) {
+  body {padding:11px}
+  .stat strong {font-size:18px}
+  .tabs button {font-size:11px}
+}
 </style>
 </head>
+
 <body>
-<div class="wrap">
-<header><div class="top"><div><div class="brand">◈ My Expense Tracker</div><div class="month" id="headerMonth">Monthly money overview</div></div><div style="font-size:27px">₹</div></div></header>
-<main class="content">
-<section class="view active" id="home">
- <div class="budget">
-  <div class="row"><div class="label">MONTHLY BUDGET</div><span class="pill" id="monthPill">NOV 2026</span></div>
-  <div class="big green" id="budgetValue">₹20,000</div>
-  <div class="progress"><div class="bar" id="progressBar"></div></div>
-  <div class="stats">
-   <div class="stat"><span class="label">Spent</span><strong id="spentValue">₹0</strong></div>
-   <div class="stat"><span class="label">Remaining</span><strong class="green" id="remainingValue">₹20,000</strong></div>
-   <div class="stat"><span class="label">Income recorded</span><strong id="incomeValue">₹0</strong></div>
-   <div class="stat"><span class="label">Budget used</span><strong id="percentValue">0%</strong></div>
+<header>
+  <h1>My Expense Tracker</h1>
+  <p class="muted">Your personal monthly money tracker</p>
+</header>
+
+<section class="card">
+  <div class="row">
+    <h2>Monthly overview</h2>
+    <input id="monthPicker" type="month" style="width:155px">
   </div>
-  <p class="note" id="projection"></p>
- </div>
- <div class="section">Quick actions</div>
- <div class="actions"><button class="primary" onclick="showView('add')">＋ Add expense</button><button class="secondary" onclick="showView('addIncome')">＋ Add income</button></div>
- <div class="section">Recent transactions</div>
- <div class="card" id="recentList"><div class="empty">No transactions yet. Add your first expense when you are ready.</div></div>
+  <div class="grid">
+    <div class="stat">
+      <small>Monthly budget</small>
+      <strong id="budgetDisplay">₹0</strong>
+    </div>
+    <div class="stat">
+      <small>Total spent</small>
+      <strong id="spentDisplay">₹0</strong>
+    </div>
+    <div class="stat">
+      <small>Remaining budget</small>
+      <strong id="remainingDisplay">₹0</strong>
+    </div>
+    <div class="stat">
+      <small>Income received</small>
+      <strong id="incomeDisplay">₹0</strong>
+    </div>
+  </div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <p class="muted" id="progressText">0% of budget used</p>
 </section>
-<section class="view" id="add">
- <div class="section">Add an expense</div><div class="card"><form id="expenseForm">
- <label>Description<input id="eDesc" placeholder="e.g. Lunch, petrol, tea" required maxlength="60"></label>
- <label>Amount (₹)<input id="eAmount" type="number" min="0.01" step="0.01" placeholder="150" required></label>
- <label>Category<select id="eCategory"></select></label>
- <label>Date<input id="eDate" type="date" required></label>
- <button class="primary">Save expense</button></form></div>
-</section>
-<section class="view" id="addIncome">
- <div class="section">Record income</div><div class="card"><form id="incomeForm">
- <label>Description<input id="iDesc" placeholder="e.g. Salary, refund" required maxlength="60"></label>
- <label>Amount (₹)<input id="iAmount" type="number" min="0.01" step="0.01" required></label>
- <label>Date<input id="iDate" type="date" required></label>
- <button class="primary">Save income</button></form></div>
-</section>
-<section class="view" id="history">
- <div class="section">Transaction history</div><div class="card"><label>Choose month<input id="historyMonth" type="month"></label><div id="historyList"></div></div>
-</section>
-<section class="view" id="reports">
- <div class="section">Monthly category report</div><div class="card"><label>Choose month<input id="reportMonth" type="month"></label><div id="categoryReport"></div></div>
- <div class="section">Backup & restore</div><div class="card">
- <button class="primary" style="width:100%" onclick="exportCSV()">↓ Export Excel-compatible CSV</button>
- <p class="note">Exports all transactions, including dates, type, category, description and amount. Open the CSV file in Microsoft Excel.</p>
- <label>Restore transactions from a previously exported CSV<input type="file" id="importFile" accept=".csv,text/csv"></label>
- <p class="note">Import adds records to this phone; it does not erase existing records. Avoid importing the same backup twice.</p>
- </div>
-</section>
-<section class="view" id="settings">
- <div class="section">Budget settings</div><div class="card"><form id="settingsForm">
- <label>Monthly budget (₹)<input id="budgetInput" type="number" min="1" step="1" required></label>
- <label>Tracking month<input id="settingsMonth" type="month" required></label>
- <button class="primary">Save budget</button></form>
- <p class="note">Unused budget does not carry forward. A new month starts with the saved monthly budget. Transactions remain in history.</p></div>
- <div class="section">Your data</div><div class="card"><p class="note">Your records are stored locally in this browser on this phone. They are not sent to a server. Export a backup regularly. Clearing browser data or uninstalling/resetting the browser may erase records unless you have a backup.</p><button class="danger small" onclick="clearAll()">Delete all app data</button></div>
-</section>
-</main>
-</div>
-<nav>
-<button class="active" data-view="home" onclick="showView('home')"><b>⌂</b>Home</button>
-<button data-view="add" onclick="showView('add')"><b>＋</b>Expense</button>
-<button data-view="history" onclick="showView('history')"><b>☷</b>History</button>
-<button data-view="reports" onclick="showView('reports')"><b>▥</b>Reports</button>
-<button data-view="settings" onclick="showView('settings')"><b>⚙</b>Settings</button>
+
+<nav class="tabs">
+  <button class="active" data-tab="expensePanel">Expense</button>
+  <button data-tab="incomePanel">Income</button>
+  <button data-tab="historyPanel">History</button>
+  <button data-tab="settingsPanel">Settings</button>
 </nav>
+
+<section id="expensePanel" class="card panel">
+  <h2>Add an expense</h2>
+  <form id="expenseForm">
+    <label for="eDesc">Description</label>
+    <input id="eDesc" type="text" placeholder="e.g. Groceries" required>
+
+    <label for="eAmount">Amount (₹)</label>
+    <input id="eAmount" type="number" min="0.01" step="0.01" placeholder="Enter amount" required>
+
+    <label for="eCategory">Category</label>
+    <select id="eCategory" required>
+      <option value="Food & beverages">Food & beverages</option>
+      <option value="Travel">Travel</option>
+      <option value="Shopping">Shopping</option>
+      <option value="Bills & utilities">Bills & utilities</option>
+      <option value="Health">Health</option>
+      <option value="Education">Education</option>
+      <option value="Entertainment">Entertainment</option>
+      <option value="Household">Household</option>
+      <option value="Personal">Personal</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label for="eDate">Date</label>
+    <input id="eDate" type="date" required>
+
+    <button type="submit">Save expense</button>
+  </form>
+  <p class="muted" id="expenseMessage" role="status"></p>
+</section>
+
+<section id="incomePanel" class="card panel hidden">
+  <h2>Add income</h2>
+  <form id="incomeForm">
+    <label for="iDesc">Description</label>
+    <input id="iDesc" type="text" placeholder="e.g. Salary" required>
+
+    <label for="iAmount">Amount (₹)</label>
+    <input id="iAmount" type="number" min="0.01" step="0.01" placeholder="Enter amount" required>
+
+    <label for="iDate">Date</label>
+    <input id="iDate" type="date" required>
+
+    <button type="submit">Save income</button>
+  </form>
+  <p class="muted" id="incomeMessage" role="status"></p>
+</section>
+
+<section id="historyPanel" class="card panel hidden">
+  <h2>Transaction history</h2>
+  <div class="row">
+    <p class="muted" id="historyMonth"></p>
+    <button class="secondary small" id="exportButton" type="button">Export CSV</button>
+  </div>
+  <div id="transactionList"></div>
+
+  <h3 style="margin-top:20px">Category report</h3>
+  <div id="categoryReport"></div>
+</section>
+
+<section id="settingsPanel" class="card panel hidden">
+  <h2>Budget and data settings</h2>
+  <form id="budgetForm">
+    <label for="budgetInput">Monthly budget (₹)</label>
+    <input id="budgetInput" type="number" min="0" step="0.01" required>
+    <button type="submit">Save monthly budget</button>
+  </form>
+  <p class="muted" id="settingsMessage" role="status"></p>
+
+  <hr style="border:0;border-top:1px solid var(--border);margin:20px 0">
+
+  <h3>Backup and restore</h3>
+  <p class="muted">Export your transactions as a CSV file and keep a copy somewhere safe. Import a previously exported CSV to restore transactions.</p>
+  <div class="actions">
+    <button type="button" class="secondary" id="backupButton">Download backup</button>
+    <button type="button" class="secondary" id="importButton">Import CSV</button>
+  </div>
+  <input type="file" id="importFile" accept=".csv,text/csv" class="hidden">
+
+  <p class="muted" id="backupMessage" role="status"></p>
+</section>
+
+<footer>
+  Data is stored locally in this browser on this device. Export backups regularly.
+</footer>
+
 <script>
-const KEY='myExpenseTracker_v1';
-const categories=['Food & beverages','Transportation / Petrol','Groceries','Shopping','Bills & utilities','Entertainment','Medical','Education','Household','Other'];
-let state=load();
-function monthNow(){return new Date().toISOString().slice(0,7)}
-function today(){let d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
-function load(){try{let s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.transactions))return s}catch(e){}return {budget:20000,month:'2026-11',transactions:[]}}
-function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
-function money(n){return '₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2})}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function txMonth(t){return t.date.slice(0,7)}
-function sums(m){let a=state.transactions.filter(t=>txMonth(t)===m);return {spent:a.filter(t=>t.type==='expense').reduce((x,t)=>x+t.amount,0),income:a.filter(t=>t.type==='income').reduce((x,t)=>x+t.amount,0),items:a}}
-function render(){
- let m=state.month, s=sums(m), remain=state.budget-s.spent, pct=state.budget?Math.round(s.spent/state.budget*100):0;
- document.getElementById('headerMonth').textContent=new Date(m+'-02').toLocaleDateString('en-IN',{month:'long',year:'numeric'});
- document.getElementById('monthPill').textContent=new Date(m+'-02').toLocaleDateString('en-IN',{month:'short',year:'numeric'}).toUpperCase();
- document.getElementById('budgetValue').textContent=money(state.budget);document.getElementById('spentValue').textContent=money(s.spent);
- document.getElementById('remainingValue').textContent=money(remain);document.getElementById('remainingValue').className=remain<0?'red':'green';
- document.getElementById('incomeValue').textContent=money(s.income);document.getElementById('percentValue').textContent=pct+'%';
- document.getElementById('progressBar').style.width=Math.min(100,Math.max(0,pct))+'%';
- document.getElementById('progressBar').style.background=pct>=100?'#c74747':pct>=90?'#d38b24':'#0c9b58';
- document.getElementById('projection').textContent=pct>=100?'You have reached or exceeded your monthly budget.':pct>=90?'Warning: you have used at least 90% of your budget.':pct>=75?'You have used at least 75% of your budget.':'';
- let recent=[...s.items].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id).slice(0,5);
- document.getElementById('recentList').innerHTML=recent.length?recent.map(itemHTML).join(''):'<div class="empty">No transactions yet. Add your first expense when you are ready.</div>';
- document.getElementById('budgetInput').value=state.budget;document.getElementById('settingsMonth').value=state.month;
- document.getElementById('historyMonth').value=state.month;document.getElementById('reportMonth').value=state.month;
- renderHistory();renderReport();
-}
-function itemHTML(t){return `<div class="listitem"><div><div class="desc">${esc(t.description)}</div><div class="sub">${esc(t.date)} · ${esc(t.category||t.type)}</div></div><div style="text-align:right"><strong class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'−'}${money(t.amount)}</strong><div><button class="danger small" onclick="removeTx(${t.id})">Delete</button></div></div></div>`}
-function renderHistory(){let m=document.getElementById('historyMonth').value||state.month;let a=state.transactions.filter(t=>txMonth(t)===m).sort((x,y)=>y.date.localeCompare(x.date)||y.id-x.id);document.getElementById('historyList').innerHTML=a.length?a.map(itemHTML).join(''):'<div class="empty">No transactions for this month.</div>'}
-function renderReport(){let m=document.getElementById('reportMonth').value||state.month;let a=state.transactions.filter(t=>txMonth(t)===m&&t.type==='expense'), totals={};a.forEach(t=>totals[t.category]=(totals[t.category]||0)+t.amount);let entries=Object.entries(totals).sort((x,y)=>y[1]-x[1]);document.getElementById('categoryReport').innerHTML=entries.length?entries.map(([c,v])=>`<div class="catrow"><span>${esc(c)}</span><strong>${money(v)}</strong></div>`).join(''):'<div class="empty">No expenses to report for this month.</div>'}
-function showView(v){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===v));document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='history')renderHistory();if(v==='reports')renderReport();window.scrollTo(0,0)}
-function removeTx(id){if(confirm('Delete this transaction?')){state.transactions=state.transactions.filter(t=>t.id!==id);save()}}
-function addTx(type,desc,amount,date,category){state.transactions.push({id:Date.now()+Math.floor(Math.random()*1000),type,description:desc,amount:Number(amount),date,category});save();showView('home')}
-document.getElementById('eCategory').innerHTML=categories.map(c=>`<option>${c}</option>`).join('');
-document.getElementById('eDate').value=today();document.getElementById('iDate').value=today();
-document.getElementById('expenseForm').addEventListener('submit',e=>{e.preventDefault();let a=Number(document.getElementById('eAmount').value);if(a<=0)return alert('Enter an amount greater than zero.');addTx('expense',document.getElementById('eDesc').value.trim(),a,document.getElementById('eDate').value,document.getElementById('eCategory').value);e.target.reset();document.getElementById('eDate').value=today();alert('Expense saved.')});
-document.getElementById('incomeForm').addEventListener('submit',e=>{e.preventDefault();let a=Number(document.getElementById('iAmount').value);if(a<=0)return alert('Enter an amount greater than zero.');addTx('income',document.getElementById('iDesc').value.trim(),a,document.getElementById('iDate').value,'Income');e.target.reset();document.getElementById('iDate').value=today();alert('Income saved.')});
-document.getElementById('settingsForm').addEventListener('submit',e=>{e.preventDefault();let b=Number(document.getElementById('budgetInput').value);if(b<=0)return alert('Budget must be greater than zero.');state.budget=b;state.month=document.getElementById('settingsMonth').value;save();alert('Budget settings saved.')});
-document.getElementById('historyMonth').addEventListener('change',renderHistory);document.getElementById('reportMonth').addEventListener('change',renderReport);
-function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
-function exportCSV(){let rows=[['Date','Type','Description','Category','Amount'],...state.transactions.map(t=>[t.date,t.type,t.description,t.category,t.amount])];let csv='\uFEFF'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n');let blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='expense-tracker-backup-'+today()+'.csv';a.click();URL.revokeObjectURL(a.href)}
-document.getElementById('importFile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{let txt=(await f.text()).replace(/^\uFEFF/,'');let lines=txt.split(/\r?\n/).filter(Boolean);let parse=line=>{let out=[],v='',q=false;for(let i=0;i<line.length;i++){let c=line[i];if(c==='"'&&line[i+1]==='"'){v+='"';i++}else if(c==='"')q=!q;else if(c===','&&!q){out.push(v);v=''}else v+=c}out.push(v);return out};let rows=lines.slice(1).map(parse);let count=0;rows.forEach(r=>{if(r.length>=5&&['expense','income'].includes(r[1])&&Number(r[4])>0&&/^\d{4}-\d{2}-\d{2}$/.test(r[0])){state.transactions.push({id:Date.now()+count++,date:r[0],type:r[1],description:r[2],category:r[3],amount:Number(r[4])})}});save();alert(count+' transaction(s) imported.');}catch(err){alert('Could not read this CSV backup.')}e.target.value=''});
-function clearAll(){if(confirm('Permanently delete all transactions and settings from this browser? Export a backup first if needed.')){localStorage.removeItem(KEY);state={budget:20000,month:'2026-11',transactions:[]};save()}}
-if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
-render();
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "myExpenseTracker_v2";
+  const DEFAULT_MONTH = "2026-11";
+  const DEFAULT_BUDGET = 20000;
+
+  const $ = (id) => document.getElementById(id);
+
+  let state = {
+    transactions: [],
+    budgets: {}
+  };
+
+  let selectedMonth = DEFAULT_MONTH;
+
+  function today() {
+    const d = new Date();
+    const offset = d.getTimezoneOffset();
+    return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 10);
+  }
+
+  function money(value) {
+    return Number(value || 0).toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 2
+    });
+  }
+
+  function loadData() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && Array.isArray(parsed.transactions) && parsed.budgets) {
+          state = parsed;
+        }
+      }
+    } catch (error) {
+      alert("Could not read saved data. Please check your browser storage.");
+      console.error("Loading error:", error);
+    }
+  }
+
+  function saveData() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      return true;
+    } catch (error) {
+      console.error("Saving error:", error);
+      alert("Your data could not be saved. Check that browser storage is available on your device.");
+      return false;
+    }
+  }
+
+  function getMonthTransactions() {
+    return state.transactions.filter(tx => tx.date.slice(0, 7) === selectedMonth);
+  }
+
+  function getBudget() {
+    return Number(state.budgets[selectedMonth] ?? (selectedMonth === DEFAULT_MONTH ? DEFAULT_BUDGET : 0));
+  }
+
+  function renderDashboard() {
+    const txs = getMonthTransactions();
+    const spent = txs.filter(tx => tx.type === "expense").reduce((sum, tx) => sum + tx.amount, 0);
+    const income = txs.filter(tx => tx.type === "income").reduce((sum, tx) => sum + tx.amount, 0);
+    const budget = getBudget();
+    const remaining = budget - spent;
+    const percent = budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
+
+    $("budgetDisplay").textContent = money(budget);
+    $("spentDisplay").textContent = money(spent);
+    $("remainingDisplay").textContent = money(remaining);
+    $("remainingDisplay").className = remaining < 0 ? "red" : "green";
+    $("incomeDisplay").textContent = money(income);
+    $("progressBar").style.width = percent + "%";
+    $("progressText").textContent = Math.round(budget > 0 ? (spent / budget) * 100 : 0) + "% of budget used";
+    $("historyMonth").textContent = "Showing " + selectedMonth;
+    $("budgetInput").value = budget;
+  }
+
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+    })[char]);
+  }
+
+  function renderHistory() {
+    const txs = getMonthTransactions().slice().sort((a, b) => b.date.localeCompare(a.date));
+    const list = $("transactionList");
+
+    if (txs.length === 0) {
+      list.innerHTML = '<p class="muted">No transactions recorded for this month yet.</p>';
+    } else {
+      list.innerHTML = txs.map(tx => `
+        <div class="transaction row">
+          <div>
+            <strong>${escapeHTML(tx.description)}</strong>
+            <p class="muted">${escapeHTML(tx.date)} · ${escapeHTML(tx.category || "Income")}</p>
+            <span class="muted">${tx.type === "income" ? "Income" : "Expense"}</span>
+          </div>
+          <div style="text-align:right">
+            <div class="amount ${tx.type === "income" ? "green" : "red"}">
+              ${tx.type === "income" ? "+" : "−"}${money(tx.amount)}
+            </div>
+            <button type="button" class="danger small" data-delete="${escapeHTML(tx.id)}">Delete</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    const categories = {};
+    txs.filter(tx => tx.type === "expense").forEach(tx => {
+      categories[tx.category] = (categories[tx.category] || 0) + tx.amount;
+    });
+
+    const report = $("categoryReport");
+    const entries = Object.entries(categories).sort((a, b) => b[1] - a[1]);
+
+    report.innerHTML = entries.length
+      ? entries.map(([category, amount]) => `
+          <div class="row transaction">
+            <span>${escapeHTML(category)}</span>
+            <strong>${money(amount)}</strong>
+          </div>
+        `).join("")
+      : '<p class="muted">No expense categories to report yet.</p>';
+  }
+
+  function render() {
+    renderDashboard();
+    renderHistory();
+  }
+
+  function addTransaction(type, description, amount, date, category) {
+    const tx = {
+      id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random()),
+      type,
+      description,
+      amount,
+      date,
+      category
+    };
+
+    state.transactions.push(tx);
+
+    if (!saveData()) {
+      state.transactions.pop();
+      return false;
+    }
+
+    render();
+    return true;
+  }
+
+  $("expenseForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const description = $("eDesc").value.trim();
+    const amount = Number($("eAmount").value);
+    const date = $("eDate").value;
+    const category = $("eCategory").value;
+
+    if (!description || !date || !Number.isFinite(amount) || amount <= 0) {
+      $("expenseMessage").textContent = "Please enter a valid description, amount and date.";
+      return;
+    }
+
+    if (addTransaction("expense", description, amount, date, category)) {
+      this.reset();
+      $("eDate").value = today();
+      $("expenseMessage").textContent = "Expense saved successfully.";
+    }
+  });
+
+  $("incomeForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const description = $("iDesc").value.trim();
+    const amount = Number($("iAmount").value);
+    const date = $("iDate").value;
+
+    if (!description || !date || !Number.isFinite(amount) || amount <= 0) {
+      $("incomeMessage").textContent = "Please enter a valid description, amount and date.";
+      return;
+    }
+
+    if (addTransaction("income", description, amount, date, "Income")) {
+      this.reset();
+      $("iDate").value = today();
+      $("incomeMessage").textContent = "Income saved successfully.";
+    }
+  });
+
+  $("budgetForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const budget = Number($("budgetInput").value);
+
+    if (!Number.isFinite(budget) || budget < 0) {
+      $("settingsMessage").textContent = "Please enter a valid budget.";
+      return;
+    }
+
+    state.budgets[selectedMonth] = budget;
+
+    if (saveData()) {
+      render();
+      $("settingsMessage").textContent = "Budget saved for " + selectedMonth + ".";
+    }
+  });
+
+  $("monthPicker").addEventListener("change", function () {
+    if (!this.value) return;
+    selectedMonth = this.value;
+    render();
+  });
+
+  document.querySelectorAll(".tabs button").forEach(button => {
+    button.addEventListener("click", function () {
+      document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(panel => panel.classList.add("hidden"));
+
+      this.classList.add("active");
+      $(this.dataset.tab).classList.remove("hidden");
+      render();
+    });
+  });
+
+  $("transactionList").addEventListener("click", function (event) {
+    const button = event.target.closest("[data-delete]");
+    if (!button) return;
+
+    if (!confirm("Delete this transaction?")) return;
+
+    const id = button.dataset.delete;
+    const oldTransactions = state.transactions;
+    state.transactions = state.transactions.filter(tx => tx.id !== id);
+
+    if (!saveData()) {
+      state.transactions = oldTransactions;
+      return;
+    }
+
+    render();
+  });
+
+  function csvEscape(value) {
+    return '"' + String(value ?? "").replace(/"/g, '""') + '"';
+  }
+
+  function exportCSV() {
+    const rows = [["id", "type", "description", "amount", "date", "category"]];
+
+    state.transactions.forEach(tx => {
+      rows.push([tx.id, tx.type, tx.description, tx.amount, tx.date, tx.category]);
+    });
+
+    const csv = rows.map(row => row.map(csvEscape).join(",")).join("\r\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "expense-tracker-backup-" + today() + ".csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  $("exportButton").addEventListener("click", exportCSV);
+  $("backupButton").addEventListener("click", exportCSV);
+
+  function parseCSV(text) {
+    const rows = [];
+    let row = [], value = "", quoted = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      if (quoted) {
+        if (char === '"' && text[i + 1] === '"') {
+          value += '"';
+          i++;
+        } else if (char === '"') {
+          quoted = false;
+        } else {
+          value += char;
+        }
+      } else if (char === '"') {
+        quoted = true;
+      } else if (char === ",") {
+        row.push(value); value = "";
+      } else if (char === "\n") {
+        row.push(value); rows.push(row); row = []; value = "";
+      } else if (char !== "\r") {
+        value += char;
+      }
+    }
+
+    row.push(value);
+    if (row.some(cell => cell !== "")) rows.push(row);
+    return rows;
+  }
+
+  $("importButton").addEventListener("click", () => $("importFile").click());
+
+  $("importFile").addEventListener("change", async function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    try {
+      const rows = parseCSV(await file.text());
+      if (rows.length < 2) throw new Error("The CSV file has no transaction rows.");
+
+      const headers = rows[0].map(h => h.trim().toLowerCase());
+      const index = name => headers.indexOf(name);
+
+      if (["type", "description", "amount", "date"].some(name => index(name) < 0)) {
+        throw new Error("This CSV does not have the required transaction columns.");
+      }
+
+      const imported = [];
+
+      rows.slice(1).forEach(row => {
+        const amount = Number(row[index("amount")]);
+        const date = row[index("date")];
+        const type = row[index("type")];
+
+        if (!["expense", "income"].includes(type) || !Number.isFinite(amount) || amount <= 0 || !/^\d{4}-\d{2}-\d{2}$/.test(date || "")) return;
+
+        imported.push({
+          id: index("id") >= 0 && row[index("id")] ? row[index("id")] : String(Date.now()) + Math.random(),
+          type,
+          description: row[index("description")] || "Imported transaction",
+          amount,
+          date,
+          category: index("category") >= 0 ? row[index("category")] : "Other"
+        });
+      });
+
+      if (imported.length === 0) throw new Error("No valid transactions were found.");
+
+      if (!confirm("Import " + imported.length + " transactions? Existing transactions will be kept.")) return;
+
+      const previous = state.transactions;
+      const existingIds = new Set(previous.map(tx => tx.id));
+      state.transactions = previous.concat(imported.filter(tx => !existingIds.has(tx.id)));
+
+      if (!saveData()) {
+        state.transactions = previous;
+        return;
+      }
+
+      render();
+      $("backupMessage").textContent = imported.length + " transactions imported (duplicate IDs skipped).";
+    } catch (error) {
+      $("backupMessage").textContent = "Import failed: " + error.message;
+    } finally {
+      this.value = "";
+    }
+  });
+
+  // Start the application
+  loadData();
+  $("monthPicker").value = selectedMonth;
+  $("eDate").value = today();
+  $("iDate").value = today();
+  render();
+
+  // Register the offline service worker when hosted on HTTPS or localhost
+  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(error => {
+        console.warn("Service worker registration failed:", error);
+      });
+    });
+  }
+})();
 </script>
-</body></html>
+</body>
+</html>
